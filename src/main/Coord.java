@@ -1,3 +1,4 @@
+package main;
 // Basic Point class with the methods I wanted
 public class Coord {
 	private int x;

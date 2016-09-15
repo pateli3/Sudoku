@@ -1,3 +1,4 @@
+package main;
 import java.util.*;
 
 // Represents a move that occurs while solving the sudoku

@@ -1,3 +1,4 @@
+package main;
 import java.util.*;
 
 // Represents a cell in the sudoku board

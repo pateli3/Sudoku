@@ -1,3 +1,4 @@
+package main;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
@@ -20,7 +21,7 @@ public class Solver{
 	Coord currentSquare;			// record square mouse is currently in
 	Coord pickedSquare;				// record the square the user last clicked
 	boolean solved = false;			// is the puzzle solved or not
-	boolean toggleHelp = true;		// a toggle to show possible options for a cell
+	boolean toggleHelp = false;		// a toggle to show possible options for a cell
 	LinkedList<Move> history;		// a history (used as a stack) of all actions that occur while solving
 	TreeNode<Move> guessHistory;	// root of a general tree of all guesses that occur
 	TreeNode<Move> currentNode;		// used to move around the general tree
@@ -81,7 +82,7 @@ public class Solver{
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_H) {
 				// Toggle the helpful little numbers
-				toggleHelp = !toggleHelp;
+				toggleHelp();
 			}
 			else if (e.getKeyCode() == KeyEvent.VK_U) {
 				// Update the help thingys
@@ -104,54 +105,35 @@ public class Solver{
 				// Placing a number in a selected cell
 				if (pickedSquare != null) {
 					if (e.getKeyCode() == KeyEvent.VK_1 || e.getKeyCode() == KeyEvent.VK_NUMPAD1) {
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();				
-						table[pickedSquare.X()][pickedSquare.Y()].list().add(1);
-						table[pickedSquare.X()][pickedSquare.Y()].set();
+						setCell(pickedSquare, 1);
 					}
 					else if (e.getKeyCode() == KeyEvent.VK_2 || e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();				
-						table[pickedSquare.X()][pickedSquare.Y()].list().add(2);
-						table[pickedSquare.X()][pickedSquare.Y()].set();
+						setCell(pickedSquare, 2);
 					}
 					else if (e.getKeyCode() == KeyEvent.VK_3 || e.getKeyCode() == KeyEvent.VK_NUMPAD3) {
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();				
-						table[pickedSquare.X()][pickedSquare.Y()].list().add(3);
-						table[pickedSquare.X()][pickedSquare.Y()].set();
+						setCell(pickedSquare, 3);
 					}
 					else if (e.getKeyCode() == KeyEvent.VK_4 || e.getKeyCode() == KeyEvent.VK_NUMPAD4) {
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();				
-						table[pickedSquare.X()][pickedSquare.Y()].list().add(4);
-						table[pickedSquare.X()][pickedSquare.Y()].set();
+						setCell(pickedSquare, 4);
 					}
 					else if (e.getKeyCode() == KeyEvent.VK_5 || e.getKeyCode() == KeyEvent.VK_NUMPAD5) {
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();				
-						table[pickedSquare.X()][pickedSquare.Y()].list().add(5);
-						table[pickedSquare.X()][pickedSquare.Y()].set();
+						setCell(pickedSquare, 5);
 					}
 					else if (e.getKeyCode() == KeyEvent.VK_6 || e.getKeyCode() == KeyEvent.VK_NUMPAD6) {
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();
-						table[pickedSquare.X()][pickedSquare.Y()].list().add(6);
-						table[pickedSquare.X()][pickedSquare.Y()].set();
+						setCell(pickedSquare, 6);
 					}
 					else if (e.getKeyCode() == KeyEvent.VK_7 || e.getKeyCode() == KeyEvent.VK_NUMPAD7) {
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();				
-						table[pickedSquare.X()][pickedSquare.Y()].list().add(7);
-						table[pickedSquare.X()][pickedSquare.Y()].set();
+						setCell(pickedSquare, 7);
 					}
 					else if (e.getKeyCode() == KeyEvent.VK_8 || e.getKeyCode() == KeyEvent.VK_NUMPAD8) {
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();				
-						table[pickedSquare.X()][pickedSquare.Y()].list().add(8);
-						table[pickedSquare.X()][pickedSquare.Y()].set();
+						setCell(pickedSquare, 8);
 					}
 					else if (e.getKeyCode() == KeyEvent.VK_9 || e.getKeyCode() == KeyEvent.VK_NUMPAD9) {
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();				
-						table[pickedSquare.X()][pickedSquare.Y()].list().add(9);
-						table[pickedSquare.X()][pickedSquare.Y()].set();
+						setCell(pickedSquare, 9);
 					}
 					else if (e.getKeyCode() == KeyEvent.VK_0 || e.getKeyCode() == KeyEvent.VK_NUMPAD0) {
 						// Clear the selected cell
-						table[pickedSquare.X()][pickedSquare.Y()].list().clear();
-						table[pickedSquare.X()][pickedSquare.Y()].reset();
+						clearCell(pickedSquare);
 					}
 				}
 			}
@@ -208,6 +190,34 @@ public class Solver{
 		System.out.println("Use space before loading though, cause I'm lazy.");
 		System.out.println("'h' shows hints, the possible options for each square.");
 		System.out.println("Use 'u' to update the hints after you enter numbers yourself.");
+	}
+	
+	public void setCell(Coord targetSquare, int value) {
+		if (value >= 1 && value <= 9 
+				&& targetSquare.X() >= 0 && targetSquare.X() <= 8 
+				&& targetSquare.Y() >= 0 && targetSquare.Y() <= 8) {
+			table[targetSquare.X()][targetSquare.Y()].list().clear();				
+			table[targetSquare.X()][targetSquare.Y()].list().add(value);
+			table[targetSquare.X()][targetSquare.Y()].set();
+			search(); // update hints
+		}
+	}
+	
+	public void clearCell(Coord targetSquare) {
+		if (targetSquare.X() >= 0 && targetSquare.X() <= 8 
+				&& targetSquare.Y() >= 0 && targetSquare.Y() <= 8) {
+			table[targetSquare.X()][targetSquare.Y()].list().clear();
+			table[targetSquare.X()][targetSquare.Y()].reset();
+			search(); // update hints
+		}
+	}
+	
+	public Cell[][] getTable() {
+		return table;
+	}
+	
+	public void toggleHelp() {
+		toggleHelp = !toggleHelp;
 	}
 	
 	// Solve the sudoku
