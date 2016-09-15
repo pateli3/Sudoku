@@ -1,0 +1,2 @@
+# Sudoku
+Solves a sudoku
