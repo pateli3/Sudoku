@@ -1,0 +1,39 @@
+<!-- Ian Patel -->
+<project name = "Sudoku" default = "run">
+	
+	<!-- Compile the Sudoku project -->
+	<target name = "compile" depends = "clean">
+		<javac srcdir = "."/>
+	</target>
+	
+	<!-- Delete all that we hate -->
+	<target name = "clean">
+		<delete quiet = "true" includeemptydirs = "true">
+			<fileset dir = "." includes = "**/*.class"/>
+			<fileset dir = "META-INF" includes = "**"/>
+			<fileset dir = "." includes = "temp.txt"/>
+		</delete>
+	</target>
+	
+	<!-- Put it in a jar and ship it off to Canada -->
+	<target name = "jar">
+		<jar destfile = "Sudoku.jar">
+			<fileset dir = "." includes = "**/*.java"/>
+			<fileset dir = "." includes = "build.xml"/>
+		</jar>
+	</target>
+
+	<!-- Run in standard mode, solving process is not shown -->
+	<target name = "run" depends = "compile">
+	        <java classname = "Driver" fork = "true">
+				<arg value = "false"/>
+			</java>
+	</target>
+	
+	<!-- Run in debug mode, solving process is shown -->
+	<target name = "debug" depends = "compile">
+	        <java classname = "Driver" fork = "true">
+				<arg value = "true"/>
+			</java>
+	</target>
+</project>
